@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Other/TitleScene.unity
+    guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/Other/HomeScene.unity
+    guid: 7d0bcdd3243273c4e81b9ec2dcf1cdf3
+  - enabled: 1
+    path: Assets/Scenes/Other/MonsterScene.unity
+    guid: 8c1e6e2b57254884ea9ac8dca0ccf393
+  - enabled: 1
+    path: Assets/Scenes/Other/DifficultyScene.unity
+    guid: 47d379e5690dad742a9b6a2703dfde50
+  - enabled: 1
+    path: Assets/Scenes/Difficulty/Kiwami/KiwamiSortieScene.unity
+    guid: 00187d16150dc0d43a4e738c67a2ef63
+  - enabled: 1
+    path: Assets/Scenes/Difficulty/Ultimate/UltimateSortieScene.unity
+    guid: e79990c046d65fc4fb4ca4b0854be22b
+  - enabled: 1
+    path: Assets/Scenes/Difficulty/SuperUltimate/SuperUltimateSortieScene.unity
+    guid: 16f8d2cbf5d3e6649b38d2c27be3c792
+  - enabled: 1
+    path: Assets/Scenes/Difficulty/Kiwami/KiwamiQuestStartScene.unity
+    guid: 8acccaa35e676604d9aca8a78b9dcee5
+  - enabled: 1
+    path: Assets/Scenes/Difficulty/Ultimate/UltimateQuestStartScene.unity
+    guid: 423ef1532d6e15f4e8578c3023fbb442
+  - enabled: 1
+    path: Assets/Scenes/Difficulty/SuperUltimate/SuperUltimateQuestStartScene.unity
+    guid: d7a2a1ea7a874c2428a6f93fc76d51ae
+  - enabled: 1
+    path: Assets/Scenes/Difficulty/Kiwami/KiwamiQuestScene.unity
+    guid: 7f6f9d05fe0c8d847850eebb11dfd8e0
+  - enabled: 1
+    path: Assets/Scenes/Difficulty/Ultimate/UltimateQuestScene.unity
+    guid: fabcce22c321e7d44b7eac33b05c25c1
+  - enabled: 1
+    path: Assets/Scenes/Difficulty/SuperUltimate/SuperUltimateQuestScene.unity
+    guid: c941db520909d9f4994f97f2fe03171f
+  - enabled: 1
+    path: Assets/Scenes/Difficulty/Kiwami/KiwamiResultScene.unity
+    guid: 9c98049f3751f614a8f73d97e5a4369c
+  - enabled: 1
+    path: Assets/Scenes/Difficulty/Ultimate/UltimateResultScene.unity
+    guid: ad815cc201747274e9e0726b84d2790b
+  - enabled: 1
+    path: Assets/Scenes/Difficulty/SuperUltimate/SuperUltimateResultScene.unity
+    guid: 85e19e3cf00244d49b2596310720de27
+  m_configObjects: {}
