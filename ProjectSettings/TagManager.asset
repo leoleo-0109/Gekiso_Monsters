@@ -19,6 +19,8 @@ TagManager:
   - BGM
   - QuestBGM
   - QuestButton
+  - EnemyBullet
+  - BossBullet
   layers:
   - Default
   - TransparentFX

@@ -5,36 +5,41 @@ using UniRx.Triggers;
 using System.Threading.Tasks;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using UnityEngine.EventSystems;
 
 
 public class Player : MonoBehaviour
 {
     [SerializeField] private PlayerTurnManager playerTurnManager;
-    [SerializeField] private Vector3 force;
+    [SerializeField] private BackgroundScroller backgroundScroller;
+    public Vector3 force;
     [SerializeField] private bool isHolded = false;
-    [SerializeField] float minSpeedThreshold = 0.01f; // プレイヤーの動きが停止したと判定するための最小速度閾値
 
-    [SerializeField] float friction = 0.985f;
+    [SerializeField] float friction = 0f; // 0.985
     [SerializeField] float minForce = 0.2f;
     [SerializeField] private float forcePower = 150f;
 
     [SerializeField] SpriteRenderer arrow;
-    [SerializeField] float arrowScele = 80f; //矢印の表示倍率
+    [SerializeField] float arrowScele = 80f; // 矢印の表示倍率
     [SerializeField] GameObject playerBullet;
 
     public float playerAttack = 10f;
     private IDisposable box = null;
     private Subject<Unit> moveend = new Subject<Unit>();
     private bool turnflag = false;
-    private bool shotFlag = false;
+    public bool shotFlag = false;
     private bool friendFlag = true;
     private EnemyManager enemyManager;
     private CircleCollider2D circleCollider;
+    //private PolygonCollider2D polygonCollider;
+    //private PolygonCollider2D polygonCollider2;
 
     private void Awake()
     {
         enemyManager = GameObject.FindGameObjectWithTag("EnemyManager").GetComponent<EnemyManager>();
         circleCollider = GetComponent<CircleCollider2D>();
+        //polygonCollider = GetComponent<PolygonCollider2D>();
+        //polygonCollider2 = GetComponent<PolygonCollider2D>();
     }
 
     private void Start()
@@ -43,33 +48,37 @@ public class Player : MonoBehaviour
 
         playerTurnManager = FindObjectOfType<PlayerTurnManager>();
     }
+
     public void PlayerMove()
     {
-        if(CanvasController.pauseType == PauseType.pause)
+        if (CanvasController.pauseType == PauseType.pause)
         {
             isHolded = false;
             return;
         }
 
-        if(force.magnitude == 0)
+        if (force.magnitude == 0)
         {
-            shotFlag = true;
+            if (!backgroundScroller.scrolling)
+            {
+                shotFlag = true;
+            }
         }
 
         force *= friction;
         if (force.magnitude < minForce && turnflag)
         {
             force = default(Vector3);
-            moveend.OnNext(Unit.Default); // 追加
+            moveend.OnNext(Unit.Default);
         }
 
-        if (Input.GetMouseButtonDown(0) && shotFlag)
+        if (Input.GetMouseButtonDown(0) && shotFlag && !backgroundScroller.scrolling)
         {
             var hit = Physics2D.Raycast(
                 Camera.main.ScreenToWorldPoint(Input.mousePosition),
                 Vector2.zero);
-
-            if (hit.collider != null)
+            Debug.Log("shotFlag");
+            if (hit.collider != null && hit.collider.CompareTag("Player"))
             {
                 arrow.gameObject.SetActive(true);
                 isHolded = true;
@@ -78,7 +87,7 @@ public class Player : MonoBehaviour
 
         if (Input.GetMouseButton(0)) 
         { 
-            //mouseとplayerの距離を計算してその長さを使用
+            // mouseとplayerの距離を計算してその長さを使用
             Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             pos.z = 0;
 
@@ -124,6 +133,8 @@ public class Player : MonoBehaviour
         turnflag = false;
         friendFlag = false;
         circleCollider.isTrigger = false;
+        //polygonCollider.isTrigger = false;
+        //polygonCollider2.isTrigger = false;
     }
 
     public void StopUpdate()
@@ -165,9 +176,9 @@ public class Player : MonoBehaviour
             {
                 friendFlag = false;
                 Instantiate(playerBullet, transform).GetComponent<PlayerBullet>().ShotPlayerBulletToEnemy(targetEnemy);
-                await UniTask.Delay(TimeSpan.FromSeconds(0.1)); // 待機処理
+                await UniTask.Delay(TimeSpan.FromSeconds(0.1f)); // 待機処理
                 Instantiate(playerBullet, transform).GetComponent<PlayerBullet>().ShotPlayerBulletToEnemy(targetEnemy);
-                await UniTask.Delay(TimeSpan.FromSeconds(0.1)); // 待機処理
+                await UniTask.Delay(TimeSpan.FromSeconds(0.1f)); // 待機処理
                 Instantiate(playerBullet, transform).GetComponent<PlayerBullet>().ShotPlayerBulletToEnemy(targetEnemy);
             }
         }
@@ -182,5 +193,7 @@ public class Player : MonoBehaviour
     {
         friendFlag = true;
         circleCollider.isTrigger = true;
+        //polygonCollider.isTrigger = true;
+        //polygonCollider2.isTrigger = true;
     }
 }

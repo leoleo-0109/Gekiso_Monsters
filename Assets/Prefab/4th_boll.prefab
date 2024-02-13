@@ -179,6 +179,8 @@ GameObject:
   - component: {fileID: 5812329041994260789}
   - component: {fileID: 5812329041994260788}
   - component: {fileID: 5812329041994260791}
+  - component: {fileID: 2930684660021064636}
+  - component: {fileID: 9018667546381042861}
   - component: {fileID: 5812329041994260790}
   - component: {fileID: 5812329041994260793}
   - component: {fileID: 5812329041994260792}
@@ -271,7 +273,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5812329041994260795}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
@@ -280,6 +282,100 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.43
+--- !u!60 &2930684660021064636
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5812329041994260795}
+  m_Enabled: 0
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -0.015}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 2.65, y: 4.5}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.36, y: -0.2}
+      - {x: 0.36, y: 0.2}
+      - {x: 0.32, y: 0.2}
+      - {x: 0.32, y: 0.24}
+      - {x: 0.28, y: 0.24}
+      - {x: 0.28, y: 0.28}
+      - {x: 0.24, y: 0.28}
+      - {x: 0.24, y: 0.32}
+      - {x: 0.2, y: 0.32}
+      - {x: 0.2, y: 0.36}
+      - {x: -0.2, y: 0.36}
+      - {x: -0.2, y: 0.32}
+      - {x: -0.24, y: 0.32}
+      - {x: -0.24, y: 0.28}
+      - {x: -0.28, y: 0.28}
+      - {x: -0.28, y: 0.24}
+      - {x: -0.32, y: 0.24}
+      - {x: -0.32, y: 0.2}
+      - {x: -0.36, y: 0.2}
+      - {x: -0.36, y: -0.2}
+      - {x: -0.32, y: -0.2}
+      - {x: -0.32, y: -0.24}
+      - {x: -0.28, y: -0.24}
+      - {x: -0.28, y: -0.28}
+      - {x: -0.24, y: -0.28}
+      - {x: -0.24, y: -0.32}
+      - {x: -0.2, y: -0.32}
+      - {x: -0.2, y: -0.36}
+      - {x: 0.2, y: -0.36}
+      - {x: 0.2, y: -0.32}
+      - {x: 0.24, y: -0.32}
+      - {x: 0.24, y: -0.28}
+      - {x: 0.28, y: -0.28}
+      - {x: 0.28, y: -0.24}
+      - {x: 0.32, y: -0.24}
+      - {x: 0.32, y: -0.2}
+--- !u!60 &9018667546381042861
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5812329041994260795}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -0.01}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 2.65, y: 4.5}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -0.2, y: -0.38}
+      - {x: 0.2, y: -0.38}
+      - {x: 0.38, y: -0.2}
+      - {x: 0.38, y: 0.18}
+      - {x: 0.2, y: 0.38}
+      - {x: -0.2, y: 0.38}
+      - {x: -0.38, y: 0.2}
+      - {x: -0.38, y: -0.2}
 --- !u!50 &5812329041994260790
 Rigidbody2D:
   serializedVersion: 4
@@ -314,9 +410,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerTurnManager: {fileID: 0}
+  backgroundScroller: {fileID: 0}
   force: {x: 0, y: 0, z: 0}
   isHolded: 0
-  minSpeedThreshold: 0.01
   friction: 0.985
   minForce: 0.2
   forcePower: 150
@@ -324,6 +420,7 @@ MonoBehaviour:
   arrowScele: 100
   playerBullet: {fileID: 8006616253900949830, guid: 034e2910b76db14488aacc484e3d872a, type: 3}
   playerAttack: 10
+  shotFlag: 0
 --- !u!222 &5812329041994260792
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -346,3 +443,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerHpController: {fileID: 0}
   player: {fileID: 5812329041994260793}
+  playerList:
+  - {fileID: 8338406638953348334, guid: 8c73360b48d7d3f4ea647d3069448e5d, type: 3}
+  - {fileID: 668847043291603125, guid: 4938f62028e997d4a92b901ca92d8ecf, type: 3}
+  - {fileID: 2414338256887300731, guid: b31c7e93b34241b43952dc24b615353c, type: 3}
+  - {fileID: 5812329041994260793}

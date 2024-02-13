@@ -22,8 +22,12 @@ public class CanvasController : MonoBehaviour
     [SerializeField, Header("ゲームオーバー画面")] private GameObject gameOverCanvas; // ゲームオーバーCanvas
     [SerializeField, Header("ゲームクリア画面")] private GameObject stageClearCanvas; // ステージクリアCanvas
     [SerializeField, Header("リザルト画面へのOKボタン表示画面")] private GameObject stageClearOKButtonCanvas; // OKボタン表示Canvas
+    [Header("スタミナ回復画面")] public GameObject staminaRecoveryCanvas; // スタミナ回復Canvas
     [SerializeField, Header("スピードクリアコントローラー")] private SpeedClearController speedClearController;
     private BGMController bgmController;
+    [SerializeField] private StaminaManager staminaManager;
+    [SerializeField] private SketManager sketManager;
+    [SerializeField] private SEController seController;
     private CancellationTokenSource cancellationTokenSource;
 
     public static PauseType pauseType;
@@ -41,21 +45,31 @@ public class CanvasController : MonoBehaviour
 
     private void Start()
     {
-        //StartCoroutine(RetireToHomeScene());
         pauseType = PauseType.play;
         cancellationTokenSource = new CancellationTokenSource();
     }
-    private void Update()
+
+    // DifficultySceneで使用
+    public void StaminaRecoveryYesButton()
     {
-        
+        seController.ClickSEPlay();
+        staminaManager.AddStamina();
+    }
+
+    // DifficultySceneで使用
+    public void StaminaRecoveryNoButton()
+    {
+        seController.ClickSEPlay();
+        staminaRecoveryCanvas.SetActive(false);
     }
 
     private async UniTask BeforeBossAttention()  // ボスアテンションCanvasを表示する
     {
         if (bossAttentionFlag) return;
+        await UniTask.Delay(TimeSpan.FromSeconds(6f)); // 待機処理
         bossAttentionFlag = true;
         bossAttentionCanvas.SetActive(true);
-        await UniTask.Delay(TimeSpan.FromSeconds(4)); // 待機処理
+        await UniTask.Delay(TimeSpan.FromSeconds(3f)); // 待機処理
         bossAttentionCanvas.SetActive(false);
         speedClearController.SpeedClearShow();
     }
@@ -69,14 +83,17 @@ public class CanvasController : MonoBehaviour
     // KiwamiQuestScene & UltimateQuestScene & SuperUltimateQuestSceneで使用
     public void MenuButton() // 「三(menu)」ボタン
     {
+        seController.ClickSEPlay();
         pauseFlag = !pauseFlag;
         pauseType = PauseType.pause;
+        seController.MenuSEPlay();
         menuCanvas.SetActive(true);
     }
 
     // KiwamiQuestScene(menu画面) & UltimateQuestScene(menu画面) & SuperUltimateQuestScene(menu画面)で使用
     public void ReturnQuestButton() // 「クエストに戻る」ボタン
     {
+        seController.ClickSEPlay();
         menuCanvas.SetActive(false);
         pauseFlag = !pauseFlag;
         pauseType = PauseType.play;
@@ -85,13 +102,13 @@ public class CanvasController : MonoBehaviour
     private async UniTask BeforeRetireButton()
     {
         if (retireFlag) return;
+        seController.ClickSEPlay();
         retireFlag = true;
         menuCanvas.SetActive(false);
         giveUpCanvas.SetActive(true);
-        await UniTask.Delay(TimeSpan.FromSeconds(4)); // 待機処理
+        await UniTask.Delay(TimeSpan.FromSeconds(4f)); // 待機処理
         bgmController.StopBGM();
         bgmController.ChangeHomeBGM();
-        //await Task.Delay(2000, cancellationToken: cancellationTokenSource.Token); // 待機処理
         SceneManager.LoadScene("HomeScene");
     }
 
@@ -101,21 +118,13 @@ public class CanvasController : MonoBehaviour
         BeforeRetireButton().Forget();
     }
 
-
-
-    //private IEnumerator RetireToHomeScene()
-    //{
-    //    yield return new WaitForSeconds(5f); // 待機時間
-    //    SceneManager.LoadScene("HomeScene");
-    //}
-
     private async UniTask BeforeQuestYouLose()  // HPが0になったら、あなたの負けCanvasを表示する
     {
         if (youLoseFlag) return;
         youLoseFlag = true;
         pauseType = PauseType.pause;
         youLoseCanvas.SetActive(true);
-        await UniTask.Delay(TimeSpan.FromSeconds(4)); // 待機処理
+        await UniTask.Delay(TimeSpan.FromSeconds(4f)); // 待機処理
         QuestGameOver();
     }
 
@@ -131,7 +140,7 @@ public class CanvasController : MonoBehaviour
         gameOverFlag = true;
         youLoseCanvas.SetActive(false);
         gameOverCanvas.SetActive(true);
-        await UniTask.Delay(TimeSpan.FromSeconds(4)); // 待機処理
+        await UniTask.Delay(TimeSpan.FromSeconds(4f)); // 待機処理
         bgmController.StopBGM();
         bgmController.ChangeHomeBGM();
         //await Task.Delay(4000, cancellationToken:cancellationTokenSource.Token); // 待機処理
@@ -150,7 +159,7 @@ public class CanvasController : MonoBehaviour
         stageClearFlag = true;
         pauseType = PauseType.pause;
         stageClearCanvas.SetActive(true);
-        await UniTask.Delay(TimeSpan.FromSeconds(4), cancellationToken: cancellationTokenSource.Token); // 待機処理
+        await UniTask.Delay(TimeSpan.FromSeconds(4f), cancellationToken: cancellationTokenSource.Token); // 待機処理
         stageClearOKButtonCanvas.SetActive(true);
     }
 
@@ -165,6 +174,4 @@ public class CanvasController : MonoBehaviour
         cancellationTokenSource.Cancel();
         cancellationTokenSource.Dispose();
     }
-
-
 }

@@ -2,17 +2,21 @@ using UnityEngine;
 using UnityEngine.UI;
 using UniRx;
 using System;
+using System.Collections.Generic;
 
 public class EnemyHpController : MonoBehaviour
 {
-    [SerializeField] private EnemyHpCanvasController enemyHpCanvasController;
+    //[SerializeField] private EnemyHpCanvasController enemyHpCanvasController;
+    [SerializeField] private SEController seController;
     [SerializeField] private EnemyDead enemyDead;
+    [SerializeField] private SketManager sketManager;
     public Slider enemyHpGauge;
     [SerializeField] private float enemyMaxHp; // 敵HPの最大値
     [SerializeField] private float currentEnemyHp; // 敵の現在のHP
     [Header("プレイヤーからの被ダメージ量")] public float playerDamage = 10f;
-    private Subject<Unit> isEnemydead = new();
-    private bool deadFlag = false;
+    private Subject<Unit> isEnemyDead = new();
+    public bool deadFlag = false;
+    private bool takeDamageSEFlag = false;
 
     //[SerializeField] private AudioClip se;
 
@@ -26,6 +30,12 @@ public class EnemyHpController : MonoBehaviour
     public void EnemyTakeDamage(float damage)
     {
         //AudioSource.PlayClipAtPoint(se, transform.position);
+        takeDamageSEFlag = true;
+        if (takeDamageSEFlag)
+        {
+            seController.TakeDamageSEPlay();
+            takeDamageSEFlag = false;
+        }
         currentEnemyHp -= damage;
         UpdateEnemyHpUI();
 
@@ -33,14 +43,11 @@ public class EnemyHpController : MonoBehaviour
         {
             if (!deadFlag)
             {
-                isEnemydead.OnNext(Unit.Default);
+                isEnemyDead.OnNext(Unit.Default);
                 deadFlag = true;
+                sketManager.EnemyKill(); // スケットスキルの使用できるまでのカウントを敵を倒した分増やす
+                //enemyHpCanvasController.DestroyEnemyHPCanvas();
             }
-            
-            //enemyBattleController.stageCount = 0;
-
-            // マップ上の全ての敵がHP0になったら、次のマップを開始する処理を呼び出す
-            //backgroundScroller.CheckAllEnemiesDefeated();
         }
     }
 
@@ -51,13 +58,14 @@ public class EnemyHpController : MonoBehaviour
 
     public IObservable<Unit> enemyDeadFlag()
     {
-        return isEnemydead;
+        return isEnemyDead;
     }
 
     public void EnemyDestroy()
     {
         deadFlag = false;
         enemyDead.EnemyDestroy(); // 敵を消す
-        isEnemydead.Dispose();
+        //enemyHpCanvasController.DestroyEnemyHPCanvas();
+        isEnemyDead.Dispose();
     }
 }

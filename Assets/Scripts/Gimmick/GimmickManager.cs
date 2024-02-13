@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 using UniRx;
+using Cysharp.Threading.Tasks;
+using System;
 
 public class GimmickManager : MonoBehaviour
 {
@@ -44,10 +46,11 @@ public class GimmickManager : MonoBehaviour
         }
     }
 
-    public void StageGimmickDestroy()
+    public async UniTask StageGimmickDestroy()
     {
         if (stages != null)
         {
+            await UniTask.Delay(TimeSpan.FromSeconds(6f)); // ë“ã@èàóù
             foreach (GameObject stage in stages)
             {
                 stage.SetActive(false);

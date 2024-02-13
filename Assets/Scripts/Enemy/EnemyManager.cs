@@ -1,13 +1,18 @@
 using System.Collections;
 using UnityEngine;
 using UniRx;
+using Cysharp.Threading.Tasks;
+using System;
 
 public class EnemyManager : MonoBehaviour
 {
     [SerializeField] private BackgroundScroller backgroundScroller;
-    private GimmickManager gimmickManager;
     [SerializeField] private CanvasController canvasController;
     [SerializeField] private BattleTextController battleTextController;
+    [SerializeField] private WaitDelayTime waitDelayTime;
+    //public GameObject enemyHpCanvas;
+    //[SerializeField] private EnemyHpCanvasController enemyHpCanvasController;
+    private GimmickManager gimmickManager;
     private BGMController bgmController;
 
     public GameObject[] stage1Enemies; // ステージ1の敵のプレハブ配列
@@ -18,7 +23,7 @@ public class EnemyManager : MonoBehaviour
     public GameObject[] stage6Enemies; // ステージ6の敵のプレハブ配列
 
     public GameObject[] currentStageEnemies{ get; private set; } // 現在のステージの敵を格納する配列
-    private int currentStageIndex = 0; // 現在のステージのインデックス
+    public int currentStageIndex = 0; // 現在のステージのインデックス
     private int currentEnemyIndex = 0; // 現在のステージの敵のインデックス
     [SerializeField] private int currentBossIndex = 3;
     private int enemiesDefeated = 0; // 現在のステージで倒した敵の数
@@ -29,13 +34,14 @@ public class EnemyManager : MonoBehaviour
     {
         bgmController = GameObject.FindGameObjectWithTag("BGM").GetComponent<BGMController>();
         gimmickManager = GetComponent<GimmickManager>();
+        //enemyHpCanvasController.enemyHpCanvas.SetActive(false);
     }
 
     private void Start()
     {
         PlayerTurnManager.stageType = StageType.enemyStage;
         // 最初のステージの敵をセットアップ
-        battleTextController.BattleCountUp(currentStageIndex);
+        battleTextController.BattleCountUp(currentStageIndex).Forget();
         SetStageEnemies();
         backgroundScroller.scroll.Subscribe(x => {
             SetStageEnemies();
@@ -47,16 +53,25 @@ public class EnemyManager : MonoBehaviour
         // 敵が全滅したら次のステージに進む
         if (enemiesDefeated == currentStageEnemies.Length)
         {
-            gimmickManager.StageGimmickDestroy();
+            gimmickManager.StageGimmickDestroy().Forget();
             currentStageIndex++;
-            battleTextController.BattleCountUp(currentStageIndex);
+            battleTextController.BattleCountUp(currentStageIndex).Forget();
+            //if (currentStageIndex == 3)
+            //{
+            //    waitDelayTime.WaitTime().Forget();
+            //    enemyHpCanvasController.enemyHpCanvas.SetActive(true);
+            //}
+            //else
+            //{
+            //    enemyHpCanvasController.enemyHpCanvas.SetActive(false);
+            //}
             if (currentBossIndex == currentStageIndex)
             {
                 PlayerTurnManager.stageType = StageType.bossStage;
                 canvasController.BossAttention();
                 bgmController.ChangeBGM();
             }
-            // BackgroundScrollerのCheckAllEnemiesDefeatedを呼び出す
+            
             backgroundScroller.CheckAllEnemiesDefeated();
             enemiesDefeated = 0;
         }
@@ -131,6 +146,11 @@ public class EnemyManager : MonoBehaviour
             }
         }
         gimmickManager.SetStageGimmick(currentStageIndex); // ギミックの表示
+    }
+
+    private async UniTask WaitTime()
+    {
+        await UniTask.Delay(TimeSpan.FromSeconds(9f)); // 待機処理
     }
 }
 

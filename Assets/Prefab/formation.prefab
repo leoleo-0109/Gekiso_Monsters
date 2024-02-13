@@ -537,6 +537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d22c5f0d6d20d0429306bd77e201987, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seController: {fileID: 0}
 --- !u!1 &7560544523180036422
 GameObject:
   m_ObjectHideFlags: 0
@@ -725,7 +726,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 98}
-  m_SizeDelta: {x: 120, y: 24}
+  m_SizeDelta: {x: 140, y: 24}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7560544523794639547
 CanvasRenderer:
@@ -755,7 +756,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a145060be9c5f0d4f82ae3b7a29e1ca1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3f9469277c5e87b49b1ad3fae12c1d4d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

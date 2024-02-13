@@ -1,4 +1,7 @@
 using UnityEngine;
+using UniRx;
+using Cysharp.Threading.Tasks;
+using System;
 
 public class BGMController : MonoBehaviour
 {
@@ -29,8 +32,9 @@ public class BGMController : MonoBehaviour
 
     }
 
-    public void ChangeBGM()
+    public async void ChangeBGM()
     {
+        await UniTask.Delay(TimeSpan.FromSeconds(6f)); // ë“ã@èàóù
         currentBGM.clip = bossBGM;
         currentBGM.Play();
     }
