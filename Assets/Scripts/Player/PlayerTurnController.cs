@@ -4,7 +4,7 @@ public class PlayerTurnController : MonoBehaviour
 {
     [SerializeField] private Player player;
     //public string playerName; // プレイヤーの名前など、必要なプレイヤー情報を追加することができます
-    public bool isMyTurn;     // そのプレイヤーのターンかどうかを判定するフラグ
+    public bool isMyTurn; // そのプレイヤーのターンかどうかを判定するフラグ
 
     private void Update()
     {

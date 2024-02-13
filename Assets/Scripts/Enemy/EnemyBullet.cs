@@ -1,47 +1,57 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyBullet : MonoBehaviour
 {
     public float enemyBulletSpeed = 10f; // 弾の移動速度
-    public float maxDistance = 10f; // 弾の最大飛距離
-    public float destroyDelay = 2f; // 弾が消えるまでの時間
+    [Header("クエスト難易度(極：1～3：超究極)"),SerializeField] private float questTypeNum = default; 
+    [SerializeField] private float[] enemyBulletDamages = { 3000, 4000, 5000 };
 
-    private Transform target; // 追尾するターゲット（プレイヤー）
-
-    // 弾が生成されたときにターゲットを設定するメソッド
-    public void SetTarget(Transform targetTransform)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        target = targetTransform;
+        if (other != null)
+        {
+            if (other.CompareTag("Player"))
+            {
+                try
+                {
+                    switch (questTypeNum)
+                    {
+                        case 1:
+                            other.GetComponent<PlayerHpController>().PlayerTakeDamage(enemyBulletDamages[0]);
+                            break;
+                        case 2:
+                            other.GetComponent<PlayerHpController>().PlayerTakeDamage(enemyBulletDamages[1]);
+                            break;
+                        case 3:
+                            other.GetComponent<PlayerHpController>().PlayerTakeDamage(enemyBulletDamages[2]);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                catch
+                {
+                    Debug.Log(other.gameObject + "が敵からのダメージを受けた");
+                }
+            }
+            if (other.CompareTag("Wall"))
+            {
+                Destroy(gameObject);
+            }
+        }
     }
 
-    private void Update()
+    public void ShotEnemyBulletToPlayer(GameObject target)
     {
-        // ターゲットが存在しない場合は弾を消す
         if (target == null)
         {
-            Destroy(gameObject, destroyDelay);
+            Destroy(gameObject);
             return;
         }
-
-        // 弾の移動処理（ターゲットの方向に向かって追尾する）
-        Vector3 direction = (target.position - transform.position).normalized;
-        transform.position += direction * enemyBulletSpeed * Time.deltaTime;
-
-        // 弾が一定距離以上飛んだら消す
-        if (Vector3.Distance(transform.position, target.position) > maxDistance)
-        {
-            Destroy(gameObject);
-        }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        // 弾がプレイヤーに当たった場合の処理（ダメージを与えるなど）
-        if (other.CompareTag("Player"))
-        {
-            // ダメージ処理などを記述
-            Destroy(gameObject);
-        }
+        // ターゲットの方向を計算し、発射する
+        Vector3 direction = (target.transform.position - transform.position).normalized;
+        GetComponent<Rigidbody2D>().velocity = direction * enemyBulletSpeed;
     }
 }
 

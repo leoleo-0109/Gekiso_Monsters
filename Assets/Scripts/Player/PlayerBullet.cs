@@ -21,13 +21,12 @@ public class PlayerBullet : MonoBehaviour
             {
                 Destroy(gameObject);
             }
-
         }
     }
 
     public void ShotPlayerBulletToEnemy(GameObject target)
     {
-        if(target == null)
+        if (target == null)
         {
             Destroy(gameObject);
             return;

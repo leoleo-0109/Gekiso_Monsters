@@ -18,6 +18,7 @@ public enum QuestType
 
 public class BossHpController : MonoBehaviour
 {
+    [SerializeField] private SEController seController;
     [SerializeField] private BossHpCanvasController bossHpCanvasController;
     [SerializeField] private BossDead bossDead;
     [SerializeField] private BossHpDestroy bossHpDestroy;
@@ -27,11 +28,12 @@ public class BossHpController : MonoBehaviour
     public QuestType questType;
     [SerializeField] private GameObject bossHpCanvas;
     [SerializeField] private float bossMaxHp; // ボスHPの最大値
-    [SerializeField] private float currentBossHp; // ボスの現在のHP
+    public float currentBossHp; // ボスの現在のHP
     [Header("プレイヤーからの被ダメージ量")] public float playerDamage = 10f;
     public Slider bossHpGauge;
+    private bool takeDamageSEFlag = false;
 
-    private Subject<Unit> isBossDead = new();
+    public Subject<Unit> isBossDead = new();
 
     //[SerializeField] private AudioClip se;
 
@@ -45,11 +47,18 @@ public class BossHpController : MonoBehaviour
     public void BossTakeDamage(float damage)
     {
         //AudioSource.PlayClipAtPoint(se, transform.position);
+        takeDamageSEFlag = true;
+        if (takeDamageSEFlag)
+        {
+            seController.TakeDamageSEPlay();
+            takeDamageSEFlag = false;
+        }
         currentBossHp -= damage;
         UpdateBossHpUI();
 
         if (currentBossHp <= 0)
         {
+            seController.DestroyBossSEPlay();
             isBossDead.OnNext(Unit.Default);
         }
     }
@@ -66,7 +75,7 @@ public class BossHpController : MonoBehaviour
 
     public void BossDestroy()
     {
-        bossDead.BossDestroy(); // 敵を消す
+        bossDead.BossDestroy(); // ボスを消す
         isBossDead.Dispose();
         bossHpDestroy.BossHpBarDestroy(); // ボスのHPバーを消す
         if (bossType == BossType.boss)

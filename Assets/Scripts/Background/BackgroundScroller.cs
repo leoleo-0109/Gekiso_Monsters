@@ -2,14 +2,21 @@ using System.Collections;
 using UnityEngine;
 using UniRx;
 using System;
+using Cysharp.Threading.Tasks;
+using System.Collections.Generic;
 
 public class BackgroundScroller : MonoBehaviour
 {
-    public static BackgroundScroller Instance; // Singleton
+    [SerializeField] private static BackgroundScroller Instance; // シングルトン
+    [SerializeField] private PlayerTurnManager playerTurnManager;
+    [SerializeField] private PlayerHpController playerHpController;
+    [SerializeField] private SEController seController;
+
+    public List<Player> playerList = new List<Player>();
 
     public float scrollSpeed = 2.0f; // 背景のスクロール速度
     public float stopPositionY = -5.7f; // 停止するY座標
-    private bool scrolling = false;
+    public bool scrolling = false;
     private int enemiesCount; // 敵の数を管理する変数
 
     private Vector3 startPosition; // 初期位置
@@ -35,14 +42,6 @@ public class BackgroundScroller : MonoBehaviour
 
     private void Update()
     {
-        //// 敵を全員倒した後にスクロールを開始
-        //if (AllEnemiesDefeated() && !scrolling)
-        //{
-        //    scrolling = true;
-        //    // 次のマップの敵を出現させる処理を呼び出す
-        //    StartCoroutine(ScrollBackgroundAndSpawnNextMap());
-        //}
-
         // スクロール中はY座標を変化させる
         if (scrolling)
         {
@@ -54,12 +53,17 @@ public class BackgroundScroller : MonoBehaviour
             {
                 startPosition = backgroundContainer.position;
                 scrolling = false;
-                StartCoroutine(ScrollBackgroundAndSpawnNextMap());
+                ScrollBackgroundAndSpawnNextMap().Forget();
+                // マップクリア回復 {計算式：(MaxHP - 現在のHP) / 2}
+                seController.TakeHealSEPlay();
+                playerHpController.currentPlayerHp += (playerHpController.playerMaxHp - playerHpController.currentPlayerHp) / 2;
+                playerHpController.playerHpGauge.value = playerHpController.currentPlayerHp;
+                playerHpController.playerHpText.text = playerHpController.currentPlayerHp.ToString();
             }
         }
     }
 
-    public void CheckAllEnemiesDefeated()
+    public async UniTask BeforeCheckAllEnemiesDefeated()
     {
         // 敵の数を更新
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -68,27 +72,21 @@ public class BackgroundScroller : MonoBehaviour
         // 敵を全滅させた場合に背景をスクロールさせる
         if (enemiesCount == 0 && !scrolling)
         {
+            playerList[(playerTurnManager.playerValue + 1) % 4].shotFlag = false;
+            // プレイヤーの速度が止まったら、背景画面をスクロールする
+            await UniTask.Delay(TimeSpan.FromSeconds(6f)); // 待機処理
             scrolling = true;
-            // 次のマップの敵を出現させる処理を呼び出す
         }
     }
 
-    //private void StartNextMap()
-    //{
-    //    // 背景をスクロールさせる処理を開始
-    //    StartCoroutine(ScrollBackgroundAndSpawnNextMap());
-    //}
-
-    private IEnumerator ScrollBackgroundAndSpawnNextMap()
+    public void CheckAllEnemiesDefeated()
     {
-        // 少し待機してから次のマップの敵を出現させる
-        yield return new WaitForSeconds(1.0f);
-        scroll.OnNext(Unit.Default);
+        BeforeCheckAllEnemiesDefeated().Forget();
     }
 
-    private bool AllEnemiesDefeated()
+    private async UniTask ScrollBackgroundAndSpawnNextMap()
     {
-        // 敵を全員倒したかどうかの判定ロジックを実装
-        return enemiesCount == 0;
+        await UniTask.Delay(TimeSpan.FromSeconds(0.1f)); // 待機処理
+        scroll.OnNext(Unit.Default);
     }
 }
